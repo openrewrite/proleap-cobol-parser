@@ -10,11 +10,13 @@ package io.proleap.cobol.preprocessor.sub.document.impl;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import io.proleap.cobol.CobolPreprocessorLexer;
 import io.proleap.cobol.CobolPreprocessorParser;
 import io.proleap.cobol.CobolPreprocessorParser.StartRuleContext;
+import io.proleap.cobol.StringWithOriginalPositions;
 import io.proleap.cobol.asg.params.CobolParserParams;
 import io.proleap.cobol.asg.runner.ThrowingErrorListener;
 import io.proleap.cobol.preprocessor.sub.document.CobolDocumentParser;
@@ -51,9 +53,9 @@ public class CobolDocumentParserImpl implements CobolDocumentParser {
 	}
 
 	@Override
-	public String processLines(final String code, final CobolParserParams params) {
-		final boolean requiresProcessorExecution = containsTrigger(code, triggers);
-		final String result;
+	public StringWithOriginalPositions processLines(final StringWithOriginalPositions code, final CobolParserParams params) {
+		final boolean requiresProcessorExecution = containsTrigger(code.text, triggers);
+		final StringWithOriginalPositions result;
 
 		if (requiresProcessorExecution) {
 			result = processWithParser(code, params);
@@ -64,9 +66,9 @@ public class CobolDocumentParserImpl implements CobolDocumentParser {
 		return result;
 	}
 
-	protected String processWithParser(final String code, final CobolParserParams params) {
+	protected StringWithOriginalPositions processWithParser(final StringWithOriginalPositions code, final CobolParserParams params) {
 		// run the lexer
-		final CobolPreprocessorLexer lexer = new CobolPreprocessorLexer(CharStreams.fromString(code));
+		final CobolPreprocessorLexer lexer = new CobolPreprocessorLexer(CharStreams.fromString(code.text));
 
 		if (!params.getIgnoreSyntaxErrors()) {
 			// register an error listener, so that preprocessing stops on errors
@@ -89,6 +91,43 @@ public class CobolDocumentParserImpl implements CobolDocumentParser {
 		// specify our entry point
 		final StartRuleContext startRule = parser.startRule();
 
+		// Fix token positions
+		System.out.println("------------------------------");
+		for(int i=0; i<tokens.size(); i++) {
+			Token t = tokens.get(i);
+			int start = t.getStartIndex();
+			int stop = t.getStopIndex();
+			System.out.print(code.text.substring(start, stop+1));
+		}
+		System.out.println("\n------------------------------");
+		
+		for(int i=0; i<tokens.size(); i++) {
+			Token t = tokens.get(i);
+			int start = t.getStartIndex();
+			int stop = t.getStopIndex();
+			if(t.getType() != Token.EOF) {
+				int originalStart = code.originalPositions[start];
+				int originalStop = code.originalPositions[stop];
+				System.out.print(code.originalCode.substring(originalStart, originalStop+1));
+				System.out.print("");
+			}
+		}
+		System.out.println("\n------------------------------");
+		
+		for(int i=0; i<tokens.size(); i++) {
+			Token t = tokens.get(i);
+			int start = t.getStartIndex();
+			int stop = t.getStopIndex();
+			if(t.getType() != Token.EOF) {
+				int originalStart = code.originalPositions[start];
+				int originalStop = code.originalPositions[stop];
+				System.out.println("token #" + i + ":");
+				System.out.println("   text start=" + start + ", stop=" + stop + " <" + code.text.substring(start, stop+1) + ">");
+				System.out.println("   orig start=" + originalStart + ", stop=" + originalStop + " <" + code.originalCode.substring(originalStart, originalStop+1) + ">");
+				System.out.print("");
+			}
+		}
+
 		// analyze contained copy books
 		final CobolDocumentParserListener listener = createDocumentParserListener(params, tokens);
 		final ParseTreeWalker walker = new ParseTreeWalker();
@@ -96,6 +135,6 @@ public class CobolDocumentParserImpl implements CobolDocumentParser {
 		walker.walk(listener, startRule);
 
 		final String result = listener.context().read();
-		return result;
+		return new StringWithOriginalPositions(result);
 	}
 }

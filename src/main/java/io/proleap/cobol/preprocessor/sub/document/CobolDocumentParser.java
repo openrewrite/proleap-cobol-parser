@@ -8,9 +8,10 @@
 
 package io.proleap.cobol.preprocessor.sub.document;
 
+import io.proleap.cobol.StringWithOriginalPositions;
 import io.proleap.cobol.asg.params.CobolParserParams;
 
 public interface CobolDocumentParser {
 
-	String processLines(String code, CobolParserParams params);
+	StringWithOriginalPositions processLines(StringWithOriginalPositions code, CobolParserParams params);
 }

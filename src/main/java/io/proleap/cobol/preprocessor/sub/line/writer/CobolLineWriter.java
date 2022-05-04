@@ -10,9 +10,10 @@ package io.proleap.cobol.preprocessor.sub.line.writer;
 
 import java.util.List;
 
+import io.proleap.cobol.StringWithOriginalPositions;
 import io.proleap.cobol.preprocessor.sub.CobolLine;
 
 public interface CobolLineWriter {
 
-	String serialize(List<CobolLine> lines);
+	StringWithOriginalPositions serialize(String originalCode, List<CobolLine> lines);
 }

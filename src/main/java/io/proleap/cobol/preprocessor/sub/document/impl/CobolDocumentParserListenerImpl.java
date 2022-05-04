@@ -170,6 +170,7 @@ public class CobolDocumentParserListenerImpl extends CobolPreprocessorBaseListen
 	@Override
 	public void exitCopyStatement(final CobolPreprocessorParser.CopyStatementContext ctx) {
 		// throw away COPY terminals
+		//XXX
 		pop();
 
 		// a new context for the copy book content
