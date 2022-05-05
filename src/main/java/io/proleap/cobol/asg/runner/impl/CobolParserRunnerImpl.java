@@ -10,6 +10,8 @@ package io.proleap.cobol.asg.runner.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import io.proleap.cobol.CobolLexer;
 import io.proleap.cobol.CobolParser;
 import io.proleap.cobol.CobolParser.StartRuleContext;
+import io.proleap.cobol.StringWithOriginalPositions;
 import io.proleap.cobol.asg.exception.CobolParserException;
 import io.proleap.cobol.asg.metamodel.CompilationUnit;
 import io.proleap.cobol.asg.metamodel.Program;
@@ -178,7 +181,7 @@ public class CobolParserRunnerImpl implements CobolParserRunner {
 		LOG.info("Parsing compilation unit {}.", compilationUnitName);
 
 		// preprocess input stream
-		final String preProcessedInput = new CobolPreprocessorImpl().process(cobolCode, params);
+		final StringWithOriginalPositions preProcessedInput = new CobolPreprocessorImpl().processWithOriginalPositions(cobolCode, params);
 
 		parsePreprocessInput(preProcessedInput, compilationUnitName, program, params);
 	}
@@ -194,17 +197,28 @@ public class CobolParserRunnerImpl implements CobolParserRunner {
 			LOG.info("Parsing compilation unit {}.", compilationUnitName);
 
 			// preprocess input stream
-			final String preProcessedInput = new CobolPreprocessorImpl().process(cobolFile, params);
+			final Charset charset = params.getCharset();
+			LOG.info("Preprocessing file {} with line format {} and charset {}.", cobolFile.getName(), params.getFormat(),
+					charset);
+			final String cobolFileContent = Files.readString(cobolFile.toPath(), charset);
+
+			final StringWithOriginalPositions preProcessedInput = new CobolPreprocessorImpl().processWithOriginalPositions(cobolFileContent, params);
 
 			parsePreprocessInput(preProcessedInput, compilationUnitName, program, params);
 		}
 	}
 
-	protected void parsePreprocessInput(final String preProcessedInput, final String compilationUnitName,
+	public CobolLexer lexer; 
+	public CommonTokenStream tokens;
+	public CobolParser parser;
+	
+	protected void parsePreprocessInput(final StringWithOriginalPositions preProcessedInput, final String compilationUnitName,
 			final Program program, final CobolParserParams params) throws IOException {
 		// run the lexer
-		final CobolLexer lexer = new CobolLexer(CharStreams.fromString(preProcessedInput));
+		lexer = new CobolLexer(CharStreams.fromString(preProcessedInput.preprocessedText));
 
+		lexer.setTokenFactory(new CobolTokenFactory(preProcessedInput));
+		
 		if (!params.getIgnoreSyntaxErrors()) {
 			// register an error listener, so that preprocessing stops on errors
 			lexer.removeErrorListeners();
@@ -212,10 +226,10 @@ public class CobolParserRunnerImpl implements CobolParserRunner {
 		}
 
 		// get a list of matched tokens
-		final CommonTokenStream tokens = new CommonTokenStream(lexer);
+		tokens = new CommonTokenStream(lexer);
 
 		// pass the tokens to the parser
-		final CobolParser parser = new CobolParser(tokens);
+		parser = new CobolParser(tokens);
 
 		if (!params.getIgnoreSyntaxErrors()) {
 			// register an error listener, so that preprocessing stops on errors
@@ -227,7 +241,7 @@ public class CobolParserRunnerImpl implements CobolParserRunner {
 		final StartRuleContext ctx = parser.startRule();
 
 		// analyze contained compilation units
-		final List<String> lines = splitLines(preProcessedInput);
+		final List<String> lines = splitLines(preProcessedInput.preprocessedText);
 		final ParserVisitor visitor = new CobolCompilationUnitVisitorImpl(compilationUnitName, lines, tokens, program);
 
 		visitor.visit(ctx);

@@ -3,14 +3,14 @@ package io.proleap.cobol;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StringBufferWithMarkers {
+public class StringBufferWithOriginalPositions {
 
 	StringBuffer sb;
 	String originalCode;
 	List<Integer> originalPositions;
 	int currentPositionInOriginalFile;
 	
-	public StringBufferWithMarkers(String originalCode)
+	public StringBufferWithOriginalPositions(String originalCode)
 	{
 		this.sb = new StringBuffer();
 		this.originalCode = originalCode;

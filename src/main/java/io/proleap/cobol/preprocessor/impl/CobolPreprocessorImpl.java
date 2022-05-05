@@ -62,26 +62,26 @@ public class CobolPreprocessorImpl implements CobolPreprocessor {
 		return new CobolLineWriterImpl();
 	}
 
-	protected String parseDocument(final String originalCode, final List<CobolLine> lines, final CobolParserParams params) {
+	protected StringWithOriginalPositions parseDocument(final String originalCode, final List<CobolLine> lines, final CobolParserParams params) {
 		final StringWithOriginalPositions code = createLineWriter().serialize(originalCode, lines);
 		final StringWithOriginalPositions result = createDocumentParser().processLines(code, params);
-		return result.text;
+		return result;
 	}
 
 	@Override
-	public String process(final File cobolFile, final CobolParserParams params) throws IOException {
+	public StringWithOriginalPositions processWithOriginalPositions(final File cobolFile, final CobolParserParams params) throws IOException {
 		final Charset charset = params.getCharset();
 
 		LOG.info("Preprocessing file {} with line format {} and charset {}.", cobolFile.getName(), params.getFormat(),
 				charset);
 
 		final String cobolFileContent = Files.readString(cobolFile.toPath(), charset);
-		final String result = process(cobolFileContent, params);
+		final StringWithOriginalPositions result = processWithOriginalPositions(cobolFileContent, params);
 		return result;
 	}
 
 	@Override
-	public String process(final String cobolCode, final CobolParserParams params) {
+	public StringWithOriginalPositions processWithOriginalPositions(final String cobolCode, final CobolParserParams params) {
 		final List<CobolLine> lines = readLines(cobolCode, params);
 		
 		int cobolCodeLength = cobolCode.length();
@@ -98,7 +98,7 @@ public class CobolPreprocessorImpl implements CobolPreprocessor {
 				+ (rewrittenLines.size()-1) * 2; // newlines
 		assert linesLength == rewrittenLinesLength;
 		
-		final String result = parseDocument(cobolCode, rewrittenLines, params);
+		final StringWithOriginalPositions result = parseDocument(cobolCode, rewrittenLines, params);
 		return result;
 	}
 

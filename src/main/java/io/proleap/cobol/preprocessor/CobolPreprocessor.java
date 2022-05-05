@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+import io.proleap.cobol.StringWithOriginalPositions;
 import io.proleap.cobol.asg.params.CobolParserParams;
 
 public interface CobolPreprocessor {
@@ -103,7 +104,15 @@ public interface CobolPreprocessor {
 
 	final static String WS = " ";
 
-	String process(File cobolFile, CobolParserParams params) throws IOException;
+	StringWithOriginalPositions processWithOriginalPositions(File cobolFile, CobolParserParams params) throws IOException;
 
-	String process(String cobolCode, CobolParserParams params);
+	default String process(File cobolFile, CobolParserParams params) throws IOException {
+		return processWithOriginalPositions(cobolFile, params).preprocessedText;
+	}
+	
+	StringWithOriginalPositions processWithOriginalPositions(String cobolCode, CobolParserParams params);
+
+	default String process(String cobolCode, CobolParserParams params) throws IOException {
+		return processWithOriginalPositions(cobolCode, params).preprocessedText;
+	}	
 }

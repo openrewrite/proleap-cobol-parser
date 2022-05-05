@@ -10,7 +10,7 @@ package io.proleap.cobol.preprocessor.sub.line.writer.impl;
 
 import java.util.List;
 
-import io.proleap.cobol.StringBufferWithMarkers;
+import io.proleap.cobol.StringBufferWithOriginalPositions;
 import io.proleap.cobol.StringWithOriginalPositions;
 import io.proleap.cobol.asg.params.CobolDialect;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
@@ -23,12 +23,19 @@ public class CobolLineWriterImpl implements CobolLineWriter {
 
 	@Override
 	public StringWithOriginalPositions serialize(final String originalCode, final List<CobolLine> lines) {
-		final StringBufferWithMarkers sb = new StringBufferWithMarkers(originalCode);
+		final StringBufferWithOriginalPositions sb = new StringBufferWithOriginalPositions(originalCode);
 
 		for (final CobolLine line : lines) {
 			final boolean notContinuationLine = !CobolLineTypeEnum.CONTINUATION.equals(line.getType());
 
-			sb.skip(line.getCommentArea());
+			/*
+			 Order of line elements :
+			 sequenceArea
+			 indicatorArea
+			 contentAreaA
+			 contentAreaB
+			 commentArea
+			 */
 			
 			if (notContinuationLine) {
 				if (line.getNumber() > 0) {
@@ -37,17 +44,19 @@ public class CobolLineWriterImpl implements CobolLineWriter {
 				}
 
 				sb.append(line.getBlankSequenceArea());
+				sb.skip(line.getSequenceAreaOriginal().length() - line.getBlankSequenceArea().length());
 				sb.append(line.getIndicatorArea());
 			} else {
 				sb.skip(line.getSequenceArea());
+				sb.skip(line.getSequenceAreaOriginal().length() - line.getSequenceArea().length());
 				sb.skip(line.getIndicatorArea());
 			}
 
 			sb.append(line.getContentArea());
-			
-			// We assume only the content area can be trimmed
-			// Fix markers accordingly
 			sb.skip(line.getContentAreaOriginal().length() - line.getContentArea().length());
+
+			sb.skip(line.getCommentArea());
+			sb.skip(line.getCommentAreaOriginal().length() - line.getCommentArea().length());
 		}
 
 		return sb.toStringWithMarkers();
