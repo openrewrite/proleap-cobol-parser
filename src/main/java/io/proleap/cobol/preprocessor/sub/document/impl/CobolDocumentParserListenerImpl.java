@@ -190,7 +190,9 @@ public class CobolDocumentParserListenerImpl extends CobolPreprocessorBaseListen
 		final String copyBookContent = getCopyBookContent(copySource, params);
 
 		if (copyBookContent != null) {
+			// Copy the raw copybook to the current context
 			context().write(copyBookContent + CobolPreprocessor.NEWLINE);
+			// If COPY .. REPLACING ..., replace in the current context
 			context().replaceReplaceablesByReplacements(tokens);
 		}
 

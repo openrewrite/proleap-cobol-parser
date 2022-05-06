@@ -113,7 +113,8 @@ public class CobolReplacementMapping implements Comparable<CobolReplacementMappi
 			// regex for the replacement
 			final String quotedReplacementRegex = Matcher.quoteReplacement(replacementString);
 
-			result = Pattern.compile(replaceableRegex).matcher(string).replaceAll(quotedReplacementRegex);
+			// result = Pattern.compile(replaceableRegex).matcher(string).replaceAll(quotedReplacementRegex);
+			result = replaceAll(Pattern.compile(replaceableRegex), string, quotedReplacementRegex);
 		} else {
 			result = string;
 		}
@@ -121,6 +122,23 @@ public class CobolReplacementMapping implements Comparable<CobolReplacementMappi
 		return result;
 	}
 
+	// http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/regex/Matcher.java
+	static String replaceAll(Pattern p, String text, String replacement) {
+		// XXX This is where the fun happens
+		Matcher m = p.matcher(text);
+        m.reset();
+        boolean result = m.find();
+        if (result) {
+            StringBuffer sb = new StringBuffer();
+            do {
+                m.appendReplacement(sb, replacement);
+                result = m.find();
+            } while (result);
+            m.appendTail(sb);
+            return sb.toString();
+        }
+        return text;
+    }
 	@Override
 	public String toString() {
 		return replaceable.getText() + " -> " + replacement.getText();

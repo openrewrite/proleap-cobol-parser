@@ -5,15 +5,30 @@ import java.util.List;
 
 public class StringBufferWithOriginalPositions {
 
-	StringBuffer sb;
+	StringWithOriginalPositions originalCodeWithPositions;
 	String originalCode;
+
+	StringBuffer sb;
 	List<Integer> originalPositions;
 	int currentPositionInOriginalFile;
 	
 	public StringBufferWithOriginalPositions(String originalCode)
 	{
-		this.sb = new StringBuffer();
+		this.originalCodeWithPositions = null;
 		this.originalCode = originalCode;
+
+		this.sb = new StringBuffer();
+		this.originalPositions = new ArrayList<>();
+		this.currentPositionInOriginalFile = 0;
+	}
+	
+	public StringBufferWithOriginalPositions(StringWithOriginalPositions originalCodeWithPositions)
+	{
+		this.originalCodeWithPositions = originalCodeWithPositions;
+		// This original text is the previous string's preprocessed text
+		this.originalCode = originalCodeWithPositions.preprocessedText;
+
+		this.sb = new StringBuffer();
 		this.originalPositions = new ArrayList<>();
 		this.currentPositionInOriginalFile = 0;
 	}

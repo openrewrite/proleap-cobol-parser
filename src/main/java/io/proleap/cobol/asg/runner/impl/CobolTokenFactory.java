@@ -30,7 +30,7 @@ public class CobolTokenFactory implements TokenFactory<CobolToken> {
 //		String originalText = preprocessedInput.getText(start,stop);
 //		String preprocessedText = source.b.getText(Interval.of(start,stop));
 		
-		String originalText =  preprocessedInput.getOriginalText(start, stop);
+		//String originalText =  preprocessedInput.getOriginalText(start, stop);
 		String preprocessedText =  preprocessedInput.getPreprocessedText(start, stop);
 		t.setText(preprocessedText);
 		
