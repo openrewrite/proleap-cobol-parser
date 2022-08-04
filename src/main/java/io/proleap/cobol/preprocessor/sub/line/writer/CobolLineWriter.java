@@ -15,4 +15,5 @@ import io.proleap.cobol.preprocessor.sub.CobolLine;
 public interface CobolLineWriter {
 
 	String serialize(List<CobolLine> lines);
+	String serializeWithOriginalContent(List<CobolLine> lines);
 }

@@ -39,18 +39,16 @@ public class IdentificationDivisionMultilineTest {
 
 
 		final File inputFile = new File(
-				"src/test/resources/io/proleap/cobol/preprocessor/variable/IdentificationDivisionMultiline.cbl");
+				"src/test/resources/io/proleap/cobol/preprocessor/variable/LineContinuationWhitespace.cbl");
 		final CobolPreprocessorImpl preprocessor = new CobolPreprocessorImpl();
-		final String normalProcess = preprocessor.process(inputFile, params);
 
 		final File expectedFile = new File(
-				"src/test/resources/io/proleap/cobol/preprocessor/variable/IdentificationDivisionMultiline.cbl.preprocessed");
+				"src/test/resources/io/proleap/cobol/preprocessor/variable/LineContinuationWhitespaceWithOriginalArea.cbl.preprocessed");
 		final String expected = Files.readString(expectedFile.toPath(), StandardCharsets.UTF_8);
 
 		final List<CobolLine> cobolLines = preprocessor.getRewrittenLines(inputFile, params);
 		final String processRewriteLines = preprocessor.process(cobolLines, params);
 
-		assertEquals(expected, normalProcess);
-		assertEquals(normalProcess, processRewriteLines);
+		assertEquals(expected, processRewriteLines);
 	}
 }

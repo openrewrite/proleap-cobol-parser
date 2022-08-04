@@ -67,15 +67,13 @@ public class CopyCblWrdTest {
 
 		final File inputFile = new File(DIR + "/CopyCblWord.cbl");
 		final CobolPreprocessorImpl preprocessor = new CobolPreprocessorImpl();
-		final String normalProcess = preprocessor.process(inputFile, params);
 
 		final List<CobolLine> cobolLines = preprocessor.getRewrittenLines(inputFile, params);
 		final String processRewriteLines = preprocessor.process(cobolLines, params);
 
-		final File expectedFile = new File(DIR + "/CopyCblWord.cbl.preprocessed");
+		final File expectedFile = new File(DIR + "/CopyCblWordWithOriginalArea.cbl.preprocessed");
 		final String expected = Files.readString(expectedFile.toPath(), StandardCharsets.UTF_8);
 
-		assertEquals(expected, normalProcess);
-		assertEquals(normalProcess, processRewriteLines);
+		assertEquals(expected, processRewriteLines);
 	}
 }

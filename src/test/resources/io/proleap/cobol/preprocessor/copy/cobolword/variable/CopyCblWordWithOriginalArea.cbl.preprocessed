@@ -1,0 +1,7 @@
+000100 __LINESTART__        Identification Division.
+000200 __LINESTART__        Program-ID.
+000300 __LINESTART__         CPYCBLWRD.
+000400 __LINESTART__        Procedure Division.
+000500 __LINESTART__       DISPLAY "Hello World 1"
+
+000600 __LINESTART__         STOP RUN.
