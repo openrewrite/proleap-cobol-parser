@@ -17,7 +17,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.proleap.cobol.StringWithOriginalPositions;
 import io.proleap.cobol.asg.params.CobolParserParams;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
 import io.proleap.cobol.preprocessor.sub.CobolLine;
@@ -62,10 +61,10 @@ public class CobolPreprocessorImpl implements CobolPreprocessor {
 		return new CobolLineWriterImpl();
 	}
 
-	protected String parseDocument(final String originalCode, final List<CobolLine> lines, final CobolParserParams params) {
-		final StringWithOriginalPositions code = createLineWriter().serialize(originalCode, lines);
-		final StringWithOriginalPositions result = createDocumentParser().processLines(code, params);
-		return result.text;
+	protected String parseDocument(final List<CobolLine> lines, final CobolParserParams params) {
+		final String code = createLineWriter().serialize(lines);
+		final String result = createDocumentParser().processLines(code, params);
+		return result;
 	}
 
 	@Override
@@ -83,22 +82,8 @@ public class CobolPreprocessorImpl implements CobolPreprocessor {
 	@Override
 	public String process(final String cobolCode, final CobolParserParams params) {
 		final List<CobolLine> lines = readLines(cobolCode, params);
-		
-		int cobolCodeLength = cobolCode.length();
-		int linesLength = lines.stream().map(l -> l.length()).reduce(0, Integer::sum)
-				+ (lines.size()-1) * 2; // newlines
-		assert linesLength == cobolCodeLength;
-		
 		final List<CobolLine> rewrittenLines = rewriteLines(lines);
-		assert lines.size() == rewrittenLines.size();
-		for(int i=0; i<lines.size(); i++) {
-			assert lines.get(i).length() == rewrittenLines.get(i).originalLength();
-		}
-		int rewrittenLinesLength = rewrittenLines.stream().map(l -> l.originalLength()).reduce(0, Integer::sum)
-				+ (rewrittenLines.size()-1) * 2; // newlines
-		assert linesLength == rewrittenLinesLength;
-		
-		final String result = parseDocument(cobolCode, rewrittenLines, params);
+		final String result = parseDocument(rewrittenLines, params);
 		return result;
 	}
 

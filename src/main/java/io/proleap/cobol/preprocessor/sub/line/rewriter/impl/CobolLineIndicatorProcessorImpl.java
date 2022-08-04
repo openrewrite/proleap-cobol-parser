@@ -153,7 +153,7 @@ public class CobolLineIndicatorProcessorImpl implements CobolLineIndicatorProces
 					conditionalRightTrimmedContentArea, line);
 			break;
 		}
-		
+
 		return result;
 	}
 

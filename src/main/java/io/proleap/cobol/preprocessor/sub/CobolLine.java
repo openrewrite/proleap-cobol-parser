@@ -56,24 +56,6 @@ public class CobolLine {
 				contentAreaB, contentAreaB, commentArea, commentArea, format, dialect, number, type, null, null);
 	}
 
-	public int length() {
-		return
-			commentArea.length() +
-			contentAreaA.length() +
-			contentAreaB.length() +
-			indicatorArea.length() +
-			sequenceArea.length();
-	}
-	
-	public int originalLength() {
-		return
-			commentAreaOriginal.length() +
-			contentAreaAOriginal.length() +
-			contentAreaBOriginal.length() +
-			indicatorAreaOriginal.length() +
-			sequenceAreaOriginal.length();
-	}
-	
 	protected String commentArea;
 
 	protected String commentAreaOriginal;

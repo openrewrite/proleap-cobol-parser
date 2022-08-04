@@ -42,7 +42,7 @@ public class CobolLineWriterTest {
 		lines.add(CobolLine.newCobolLine("123456", " ", "77  ", "WS-TEST-13-DATA", "NC2054.2",
 				CobolSourceFormatEnum.FIXED, null, 3, CobolLineTypeEnum.NORMAL));
 
-		final String serializedInput = writer.serialize(null, lines).text;
+		final String serializedInput = writer.serialize(lines);
 		final File expectedFile = new File(
 				"src/test/resources/io/proleap/cobol/preprocessor/sub/line/writer/LineContinuation.cbl.preprocessed");
 		final String expected = Files.readString(expectedFile.toPath(), StandardCharsets.UTF_8);
