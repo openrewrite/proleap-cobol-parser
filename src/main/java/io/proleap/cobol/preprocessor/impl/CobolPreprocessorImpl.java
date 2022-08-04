@@ -67,6 +67,21 @@ public class CobolPreprocessorImpl implements CobolPreprocessor {
 		return result;
 	}
 
+	public List<CobolLine> getRewrittenLines(final File cobolFile, final CobolParserParams params) throws IOException {
+		final Charset charset = params.getCharset();
+
+		LOG.info("Preprocessing file {} with line format {} and charset {}.", cobolFile.getName(), params.getFormat(),
+				charset);
+
+		final String cobolFileContent = Files.readString(cobolFile.toPath(), charset);
+		final List<CobolLine> lines = readLines(cobolFileContent, params);
+		return rewriteLines(lines);
+	}
+
+	public String process(List<CobolLine> rewrittenLines, final CobolParserParams params) {
+		return parseDocument(rewrittenLines, params);
+	}
+
 	@Override
 	public String process(final File cobolFile, final CobolParserParams params) throws IOException {
 		final Charset charset = params.getCharset();
