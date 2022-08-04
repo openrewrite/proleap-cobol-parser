@@ -54,7 +54,7 @@ public class CobolDocumentParserImpl implements CobolDocumentParser {
 
 	@Override
 	public StringWithOriginalPositions processLines(final StringWithOriginalPositions code, final CobolParserParams params) {
-		final boolean requiresProcessorExecution = containsTrigger(code.preprocessedText, triggers);
+		final boolean requiresProcessorExecution = containsTrigger(code.text, triggers);
 		final StringWithOriginalPositions result;
 
 		if (requiresProcessorExecution) {
@@ -68,7 +68,7 @@ public class CobolDocumentParserImpl implements CobolDocumentParser {
 
 	protected StringWithOriginalPositions processWithParser(final StringWithOriginalPositions code, final CobolParserParams params) {
 		// run the lexer
-		final CobolPreprocessorLexer lexer = new CobolPreprocessorLexer(CharStreams.fromString(code.preprocessedText));
+		final CobolPreprocessorLexer lexer = new CobolPreprocessorLexer(CharStreams.fromString(code.text));
 
 		if (!params.getIgnoreSyntaxErrors()) {
 			// register an error listener, so that preprocessing stops on errors
@@ -97,7 +97,7 @@ public class CobolDocumentParserImpl implements CobolDocumentParser {
 			Token t = tokens.get(i);
 			int start = t.getStartIndex();
 			int stop = t.getStopIndex();
-			System.out.print(code.preprocessedText.substring(start, stop+1));
+			System.out.print(code.text.substring(start, stop+1));
 		}
 		System.out.println("\n------------------------------");
 		
@@ -108,7 +108,7 @@ public class CobolDocumentParserImpl implements CobolDocumentParser {
 			if(t.getType() != Token.EOF) {
 				int originalStart = code.originalPositions[start];
 				int originalStop = code.originalPositions[stop];
-				System.out.print(code.originalText.substring(originalStart, originalStop+1));
+				System.out.print(code.originalCode.substring(originalStart, originalStop+1));
 				System.out.print("");
 			}
 		}
@@ -121,13 +121,9 @@ public class CobolDocumentParserImpl implements CobolDocumentParser {
 			if(t.getType() != Token.EOF) {
 				int originalStart = code.originalPositions[start];
 				int originalStop = code.originalPositions[stop];
-				System.out.println("token #" + i + " (" + t.getTokenIndex() + ") :");
-				System.out.println("   text start=" + start + ", stop=" + stop + " <" + code.preprocessedText.substring(start, stop+1) + ">");
-				System.out.println("   orig start=" + originalStart + ", stop=" + originalStop + " <" + code.originalText.substring(originalStart, originalStop+1) + ">");
-				System.out.println("   channel=" + t.getChannel());
-				String text = code.preprocessedText.substring(start, stop+1);
-				String orig = code.originalText.substring(originalStart, originalStop+1);
-				//assert text.equals(orig);
+				System.out.println("token #" + i + ":");
+				System.out.println("   text start=" + start + ", stop=" + stop + " <" + code.text.substring(start, stop+1) + ">");
+				System.out.println("   orig start=" + originalStart + ", stop=" + originalStop + " <" + code.originalCode.substring(originalStart, originalStop+1) + ">");
 				System.out.print("");
 			}
 		}
@@ -138,7 +134,7 @@ public class CobolDocumentParserImpl implements CobolDocumentParser {
 
 		walker.walk(listener, startRule);
 
-		final String expandedText = listener.context().read();
-		return new StringWithOriginalPositions(code, expandedText);
+		final String result = listener.context().read();
+		return new StringWithOriginalPositions(result);
 	}
 }

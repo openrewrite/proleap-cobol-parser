@@ -1,4 +1,4 @@
-000100 Identification Division.                                         ZZZZZZ
+000100 Identification Division.
 000200 Program-ID. 
 000300  CPYCBLWRD.
 000400 Procedure Division.
