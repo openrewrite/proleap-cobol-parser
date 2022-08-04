@@ -30,7 +30,7 @@ public class CobolDocumentContext {
 	}
 
 	/**
-	 * Replaces replaceables with replacements (COPY ... REPLACING ...).
+	 * Replaces replaceables with replacements.
 	 */
 	public void replaceReplaceablesByReplacements(final BufferedTokenStream tokens) {
 		if (currentReplaceableReplacements != null) {

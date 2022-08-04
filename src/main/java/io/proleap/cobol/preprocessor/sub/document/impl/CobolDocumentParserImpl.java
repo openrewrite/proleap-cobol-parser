@@ -91,7 +91,7 @@ public class CobolDocumentParserImpl implements CobolDocumentParser {
 		// specify our entry point
 		final StartRuleContext startRule = parser.startRule();
 
-		// Lexing is done, display tokens
+		// Fix token positions
 		System.out.println("------------------------------");
 		for(int i=0; i<tokens.size(); i++) {
 			Token t = tokens.get(i);
@@ -136,7 +136,6 @@ public class CobolDocumentParserImpl implements CobolDocumentParser {
 		final CobolDocumentParserListener listener = createDocumentParserListener(params, tokens);
 		final ParseTreeWalker walker = new ParseTreeWalker();
 
-		// XXX This is where the fun begins
 		walker.walk(listener, startRule);
 
 		final String expandedText = listener.context().read();

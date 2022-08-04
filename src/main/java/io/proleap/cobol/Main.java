@@ -22,32 +22,14 @@ import io.proleap.cobol.preprocessor.CobolPreprocessor;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException {
-			//new File("src/test/resources/io/proleap/cobol/asg/HelloWorld.cbl");
-			//new File("src/test/resources/io/proleap/cobol/preprocessor/fixed/LineContinuation.cbl");
+	private static final String DIR = "src/test/resources/io/proleap/cobol/preprocessor/copy/cobolword/variable";
 
-		String DIR;
-		File inputFile;
-		
-		String testName = "copyinws";
-		
-		switch(testName) {
-		case "copyinws":
-			DIR = "src/test/resources/io/proleap/cobol/preprocessor/copy/copyinws";
-			inputFile = new File(DIR + "/SM201A.CBL");
-			break;
-		case "CobolWorld":
-			DIR = "src/test/resources/io/proleap/cobol/preprocessor/copy/cobolword/variable";
-			inputFile = new File(DIR + "/CopyCblWord.cbl");
-			break;
-		case "CopyReplace":
-			DIR = "src/test/resources/io/proleap/cobol/preprocessor/copy/copyreplace/variable";
-			inputFile = new File(DIR + "/CopyReplace.cbl");;
-			break;
-		default:
-			return;
-		}
-		
+	public static void main(String[] args) throws IOException {
+		// generate ASG from plain COBOL code
+		File inputFile = 
+			//new java.io.File("src/test/resources/io/proleap/cobol/asg/HelloWorld.cbl");
+			new File(DIR + "/CopyCblWord.cbl");
+			new File("src/test/resources/io/proleap/cobol/preprocessor/fixed/LineContinuation.cbl");
 		CobolPreprocessor.CobolSourceFormatEnum format = CobolPreprocessor.CobolSourceFormatEnum.FIXED;
 
 		CobolParserRunnerImpl parser = new CobolParserRunnerImpl();
@@ -61,16 +43,13 @@ public class Main {
 		System.out.println();
 		
 		// navigate on ASG
-		Printer printer = new Printer(System.out);
-		for(CompilationUnit compilationUnit : program.getCompilationUnits()) {
-			System.out.println("Printing compilation unit " + compilationUnit.getName());
-			printer.print(compilationUnit.getCtx(), parser.tokens.getTokens());
-		}
-		/*
 		CompilationUnit compilationUnit = program.getCompilationUnit("copycblword");
+		Printer printer = new Printer(System.out);
+		printer.print(compilationUnit.getCtx(), parser.tokens.getTokens());
+
 		ProgramUnit programUnit = compilationUnit.getProgramUnit();
 		DataDivision dataDivision = programUnit.getDataDivision();
-
+		/*
 		DataDescriptionEntry dataDescriptionEntry = dataDivision.getWorkingStorageSection().getDataDescriptionEntry("ITEMS");
 		Integer levelNumber = dataDescriptionEntry.getLevelNumber();
 		*/
