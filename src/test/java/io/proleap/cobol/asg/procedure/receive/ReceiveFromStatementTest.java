@@ -16,6 +16,7 @@ import io.proleap.cobol.asg.metamodel.call.Call;
 import io.proleap.cobol.asg.metamodel.call.Call.CallType;
 import io.proleap.cobol.asg.metamodel.procedure.ProcedureDivision;
 import io.proleap.cobol.asg.metamodel.procedure.StatementTypeEnum;
+import io.proleap.cobol.asg.metamodel.procedure.receive.Before;
 import io.proleap.cobol.asg.metamodel.procedure.receive.From;
 import io.proleap.cobol.asg.metamodel.procedure.receive.ReceiveFromStatement;
 import io.proleap.cobol.asg.metamodel.procedure.receive.ReceiveStatement;
@@ -73,7 +74,7 @@ public class ReceiveFromStatementTest extends CobolTestBase {
 				}
 
 				{
-					final io.proleap.cobol.asg.metamodel.procedure.receive.Before before = receiveFromStatement
+					final Before before = receiveFromStatement
 							.getBefore();
 					final ValueStmt timeValueStmt = before.getTimeValueStmt();
 					assertNotNull(timeValueStmt);
