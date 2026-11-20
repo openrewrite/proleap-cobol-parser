@@ -31,6 +31,7 @@ import io.proleap.cobol.asg.runner.ThrowingErrorListener;
 import io.proleap.cobol.preprocessor.CobolPreprocessor.CobolSourceFormatEnum;
 import io.proleap.cobol.preprocessor.impl.CobolPreprocessorImpl;
 import io.proleap.cobol.runner.CobolParseTestRunner;
+import io.proleap.cobol.util.CobolTestStringUtils;
 
 /**
  * Cobol parse runner for JUnit tests.
@@ -63,8 +64,8 @@ public class CobolParseTestRunnerImpl implements CobolParseTestRunner {
 			LOG.info("Comparing parse tree with file {}.", treeFile.getName());
 
 			final String inputFileTree = Trees.toStringTree(startRule, parser);
-			final String cleanedInputFileTree = io.proleap.cobol.util.CobolTestStringUtils.cleanFileTree(inputFileTree);
-			final String cleanedTreeFileData = io.proleap.cobol.util.CobolTestStringUtils.cleanFileTree(treeFileData);
+			final String cleanedInputFileTree = CobolTestStringUtils.cleanFileTree(inputFileTree);
+			final String cleanedTreeFileData = CobolTestStringUtils.cleanFileTree(treeFileData);
 
 			assertEquals(cleanedTreeFileData, cleanedInputFileTree);
 		} else {

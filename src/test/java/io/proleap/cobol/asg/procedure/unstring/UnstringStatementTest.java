@@ -22,6 +22,7 @@ import io.proleap.cobol.asg.metamodel.procedure.display.DisplayStatement;
 import io.proleap.cobol.asg.metamodel.procedure.unstring.CountIn;
 import io.proleap.cobol.asg.metamodel.procedure.unstring.DelimitedByPhrase;
 import io.proleap.cobol.asg.metamodel.procedure.unstring.DelimiterIn;
+import io.proleap.cobol.asg.metamodel.procedure.unstring.Into;
 import io.proleap.cobol.asg.metamodel.procedure.unstring.IntoPhrase;
 import io.proleap.cobol.asg.metamodel.procedure.unstring.OrAll;
 import io.proleap.cobol.asg.metamodel.procedure.unstring.Sending;
@@ -96,7 +97,7 @@ public class UnstringStatementTest extends CobolTestBase {
 				assertEquals(2, intoPhrase.getIntos().size());
 
 				{
-					final io.proleap.cobol.asg.metamodel.procedure.unstring.Into into = intoPhrase.getIntos().get(0);
+					final Into into = intoPhrase.getIntos().get(0);
 					final Call intoCall = into.getIntoCall();
 					assertEquals(CallType.UNDEFINED_CALL, intoCall.getCallType());
 
@@ -108,7 +109,7 @@ public class UnstringStatementTest extends CobolTestBase {
 				}
 
 				{
-					final io.proleap.cobol.asg.metamodel.procedure.unstring.Into into = intoPhrase.getIntos().get(1);
+					final Into into = intoPhrase.getIntos().get(1);
 					final Call intoCall = into.getIntoCall();
 					assertEquals(CallType.UNDEFINED_CALL, intoCall.getCallType());
 
